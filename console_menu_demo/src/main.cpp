@@ -4,17 +4,21 @@
 
 using namespace std;
 
-void addTwoValues()
+class Adder
 {
-  int value1;
-  int value2;
-  cout << "Enter value1: ";
-  cin >> value1;
+public:
+  void addTwoValues()
+  {
+    int value1;
+    int value2;
+    cout << "Enter value1: ";
+    cin >> value1;
 
-  cout << "Enter value2: ";
-  cin >> value2;
-  cout << "The sum of " << value1 << " and " << value2 << " is " << value1 + value2 << endl;
-}
+    cout << "Enter value2: ";
+    cin >> value2;
+    cout << "The sum of " << value1 << " and " << value2 << " is " << value1 + value2 << endl;
+  }
+};
 
 void multiplyTwoValues()
 {
@@ -33,10 +37,13 @@ int main()
   ConsoleMenu mathMenu("Math Menu", cout);
 
   auto& adderMenu = mathMenu.addSubmenu('a', "Adder");
-  adderMenu.addMenuItem('2', "Add two values together", [&mathMenu](){
-      addTwoValues();
-      mathMenu.display();
-    });
+  Adder adder;
+  adderMenu.addMenuItem('2',
+                        "Add two values together",
+                        std::bind(&Adder::addTwoValues, &adder));
+  adderMenu.addMenuItem('2',
+                        "Add two values together",
+                        std::bind(&Adder::addTwoValues, &adder));
 
   auto& complexMenu = mathMenu.addSubmenu('c', "Complex Operations");
   complexMenu.addSubmenu('d', "Division", true);
