@@ -17,20 +17,6 @@ struct MenuItem
 
 class ConsoleMenu
 {
-  struct ConsoleMenuAllocator : std::allocator<ConsoleMenu>
-  {
-    template<class ConsoleMenu, class... Args>
-      void construct(ConsoleMenu* p, Args&&... args)
-    {
-      ::new((void *)p) ConsoleMenu(std::forward<Args>(args)...);
-    }
-
-    template<class U>
-      struct rebind { typedef ConsoleMenuAllocator other; };
-  };
-
-  friend class ConsoleMenuAllocator;
-
  private: // fields
   std::string menuTitle;
   std::string titleSeperator;
