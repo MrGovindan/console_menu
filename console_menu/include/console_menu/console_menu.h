@@ -8,12 +8,8 @@
 #include <list>
 #include <memory>
 
-struct MenuItem
-{
-  char key;
-  std::string description;
-  std::function<void()> function;
-};
+#include "menu_item.h"
+#include "submenu_item.h"
 
 class ConsoleMenu
 {
@@ -22,26 +18,9 @@ class ConsoleMenu
   std::string titleSeperator;
   std::string menuSeperator;
   std::ostream& outputStream;
-  std::vector<MenuItem> menuItems;
-  std::list<std::unique_ptr<ConsoleMenu>> submenus;
+  std::list<std::unique_ptr<MenuItem>> menuItems;
   ConsoleMenu* parentMenu;
   ConsoleMenu* activeSubmenu;
-
- private:
-  ConsoleMenu(const ConsoleMenu&) = delete;
-  ConsoleMenu& operator=(const ConsoleMenu&) = delete;
-
-  ConsoleMenu(const std::string& menuTitle,
-              ConsoleMenu& parentMenu,
-              bool addDefaultDisplayMenuItem);
-
-  std::vector<MenuItem>::iterator findExistingMenuItem(char key);
-
-  void addSubmenuItem(char key, const std::string& submenuName, ConsoleMenu& submenu);
-  void addReturnToRoot(ConsoleMenu& submenu);
-  void addReturnToParent(ConsoleMenu& submenu);
-
-  std::string getDisplayTitle();
 
  public:
   ConsoleMenu(const std::string& menuTitle,
@@ -59,6 +38,22 @@ class ConsoleMenu
                           bool addDefaultDisplayMenuItem = false);
 
   void handleKey(char key);
+
+ private:
+  ConsoleMenu(const ConsoleMenu&) = delete;
+  ConsoleMenu& operator=(const ConsoleMenu&) = delete;
+
+  ConsoleMenu(const std::string& menuTitle,
+              ConsoleMenu& parentMenu,
+              bool addDefaultDisplayMenuItem);
+
+  void eraseMenuItemWithSameKey(char key);
+
+  void addSubmenuItem(char key, const std::string& submenuName, ConsoleMenu& submenu);
+  void addReturnToRoot(ConsoleMenu& submenu);
+  void addReturnToParent(ConsoleMenu& submenu);
+
+  std::string getDisplayTitle();
 };
 
 #endif // CONSOLE_MENU_H

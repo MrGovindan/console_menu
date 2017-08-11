@@ -5,8 +5,10 @@
 const char TITLE_SEPERATOR = '=';
 const char MENU_SEPERATOR = '-';
 
-ConsoleMenu::ConsoleMenu(const std::string& menuTitle,
-                         std::ostream& outputStream,
+using namespace std;
+
+ConsoleMenu::ConsoleMenu(const string& menuTitle,
+                         ostream& outputStream,
                          bool addDefaultDisplayMenuItem)
   : title{menuTitle}
   , outputStream{outputStream}
@@ -24,81 +26,83 @@ void ConsoleMenu::display()
   }
   else {
     auto displayTitle = getDisplayTitle();
-    outputStream << displayTitle << std::endl;
+    outputStream << displayTitle << endl;
 
     titleSeperator.clear();
     titleSeperator.append(displayTitle.size(), TITLE_SEPERATOR);
     menuSeperator.clear();
     menuSeperator.append(displayTitle.size(), MENU_SEPERATOR);
 
-    outputStream << titleSeperator << std::endl;
+    outputStream << titleSeperator << endl;
 
     for (auto& menuItem : menuItems) {
-      outputStream << menuItem.key << ". " << menuItem.description << "." << std::endl;
+      outputStream << menuItem->getKey() << ". " << menuItem->getDescription() << "." << endl;
     }
 
-    outputStream << menuSeperator << std::endl;
+    outputStream << menuSeperator << endl;
   }
 }
 
-std::string ConsoleMenu::getDisplayTitle()
+string ConsoleMenu::getDisplayTitle()
 {
   if (parentMenu)
-    return std::string(parentMenu->getDisplayTitle() + " > "+ title);
+    return string(parentMenu->getDisplayTitle() + " > "+ title);
   else
     return title;
 }
 
-void ConsoleMenu::setTitle(const std::string& menuTitle)
+void ConsoleMenu::setTitle(const string& menuTitle)
 {
   title = menuTitle;
 }
 
 void ConsoleMenu::addMenuItem(char key,
-                              const std::string& description,
-                              std::function<void()> function)
+                              const string& description,
+                              function<void()> function)
 {
-  auto existingMenuItem = findExistingMenuItem(key);
+  eraseMenuItemWithSameKey(key);
+  auto menuItem = new MenuItem(key, description, function);
+  menuItems.emplace_back(menuItem);
 
-  if (existingMenuItem != menuItems.end()) {
-    existingMenuItem->description = description;
-    existingMenuItem->function = function;
-  }
-
-  else {
-    menuItems.emplace_back(MenuItem{key, description, function});
-    std::sort(menuItems.begin(),
-              menuItems.end(),
-              [](MenuItem& item1, MenuItem& item2){ return item1.key < item2.key; });
-  }
+  menuItems.sort([](const unique_ptr<MenuItem>& menuItem1, const unique_ptr<MenuItem>& menuItem2) {
+        return menuItem1->getKey() < menuItem2->getKey();
+      });
+  // sort(menuItems.begin(), menuItems.end(), ) );
 }
 
-std::vector<MenuItem>::iterator ConsoleMenu::findExistingMenuItem(char key)
+void ConsoleMenu::eraseMenuItemWithSameKey(char key)
 {
-  return std::find_if(menuItems.begin(),
-                      menuItems.end(),
-                      [&key](MenuItem& menuItem) {return menuItem.key == key;});
+  auto menuItem = find_if(menuItems.begin(),
+                               menuItems.end(),
+                               [&key](unique_ptr<MenuItem>& menuItem)
+                               {
+                                 return menuItem->getKey() == key;
+                               });
+
+  if (menuItem != menuItems.end()) {
+    menuItems.erase(menuItem);
+  }
 }
 
 ConsoleMenu& ConsoleMenu::addSubmenu(char key,
-                                     const std::string& submenuTitle,
+                                     const string& submenuTitle,
                                      bool addDefaultDisplayMenuItem)
 {
-  auto menu = new ConsoleMenu(submenuTitle, *this, addDefaultDisplayMenuItem);
-  submenus.emplace_back(std::move(std::unique_ptr<ConsoleMenu>(menu)));
-  auto& submenuReference = *(submenus.back().get());
+  // auto menu = new ConsoleMenu(submenuTitle, *this, addDefaultDisplayMenuItem);
+  // submenus.emplace_back(move(unique_ptr<ConsoleMenu>(menu)));
+  // auto& submenuReference = *(submenus.back().get());
 
-  addSubmenuItem(key, submenuTitle, submenuReference);
+  // addSubmenuItem(key, submenuTitle, submenuReference);
 
-  if (parentMenu)
-    addReturnToRoot(submenuReference);
+  // if (parentMenu)
+  //   addReturnToRoot(submenuReference);
 
-  addReturnToParent(submenuReference);
+  // addReturnToParent(submenuReference);
 
-  return submenuReference;
+  // return submenuReference;
 }
 
-ConsoleMenu::ConsoleMenu(const std::string& menuTitle,
+ConsoleMenu::ConsoleMenu(const string& menuTitle,
                          ConsoleMenu& parentMenu,
                          bool addDefaultDisplayMenuItem)
   : ConsoleMenu(menuTitle,
@@ -108,7 +112,7 @@ ConsoleMenu::ConsoleMenu(const std::string& menuTitle,
   this->parentMenu = &parentMenu;
 }
 
-void ConsoleMenu::addSubmenuItem(char key, const std::string& submenuName, ConsoleMenu& submenu)
+void ConsoleMenu::addSubmenuItem(char key, const string& submenuName, ConsoleMenu& submenu)
 {
   addMenuItem(key, submenuName, [&](){
       activeSubmenu = &submenu;
@@ -144,13 +148,15 @@ void ConsoleMenu::handleKey(char key)
     activeSubmenu->handleKey(key);
   }
   else {
-    auto menuItem = std::find_if(menuItems.begin(),
-                                 menuItems.end(),
-                                 [&](MenuItem& menuItem) { return menuItem.key == key; });
+    auto menuItem = find_if(menuItems.begin(),
+                            menuItems.end(),
+                            [&key](unique_ptr<MenuItem>& menuItem) {
+                              return menuItem->getKey() == key;
+                            });
 
     if (menuItem != menuItems.end())
-      menuItem->function();
+      (*menuItem)->performFunction();
     else
-      outputStream << "No menu item matches the key '" << key << "'." << std::endl;
+      outputStream << "No menu item matches the key '" << key << "'." << endl;
   }
 }

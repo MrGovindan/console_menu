@@ -8,6 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # - Console Menu Library ---------------------------------------------------------------------------
 add_library(console_menu
   src/console_menu.cpp
+  src/menu_item.cpp
   )
 
 target_include_directories(console_menu PUBLIC
