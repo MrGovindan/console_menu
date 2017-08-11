@@ -272,7 +272,7 @@ TEST(ConsoleMenu, TestSubMenuGoToParentMenu)
 }
 
 
-TEST(ConsoleMenu, shouldBeAbleToAddManuSubmenus)
+TEST(ConsoleMenu, shouldBeAbleToAddManySubmenus)
 {
   ostringstream outputStream;
   ConsoleMenu menu("Test Menu", outputStream);

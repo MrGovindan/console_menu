@@ -48,6 +48,7 @@ class ConsoleMenu
               bool addDefaultDisplayMenuItem);
 
   void eraseMenuItemWithSameKey(char key);
+  std::list<std::unique_ptr<MenuItem>>::iterator findMenuItemWithKey(char key);
 
   void addSubmenuItem(char key, const std::string& submenuName, ConsoleMenu& submenu);
   void addReturnToRoot(ConsoleMenu& submenu);

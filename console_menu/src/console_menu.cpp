@@ -67,21 +67,22 @@ void ConsoleMenu::addMenuItem(char key,
   menuItems.sort([](const unique_ptr<MenuItem>& menuItem1, const unique_ptr<MenuItem>& menuItem2) {
         return menuItem1->getKey() < menuItem2->getKey();
       });
-  // sort(menuItems.begin(), menuItems.end(), ) );
 }
 
 void ConsoleMenu::eraseMenuItemWithSameKey(char key)
 {
-  auto menuItem = find_if(menuItems.begin(),
-                               menuItems.end(),
-                               [&key](unique_ptr<MenuItem>& menuItem)
-                               {
-                                 return menuItem->getKey() == key;
-                               });
+  auto menuItem = findMenuItemWithKey(key);
 
   if (menuItem != menuItems.end()) {
     menuItems.erase(menuItem);
   }
+}
+
+list<unique_ptr<MenuItem>>::iterator ConsoleMenu::findMenuItemWithKey(char key)
+{
+  return find_if(menuItems.begin(), menuItems.end(), [&key](unique_ptr<MenuItem>& menuItem) {
+      return menuItem->getKey() == key;
+    });
 }
 
 ConsoleMenu& ConsoleMenu::addSubmenu(char key,
@@ -148,11 +149,7 @@ void ConsoleMenu::handleKey(char key)
     activeSubmenu->handleKey(key);
   }
   else {
-    auto menuItem = find_if(menuItems.begin(),
-                            menuItems.end(),
-                            [&key](unique_ptr<MenuItem>& menuItem) {
-                              return menuItem->getKey() == key;
-                            });
+    auto menuItem = findMenuItemWithKey(key);
 
     if (menuItem != menuItems.end())
       (*menuItem)->performFunction();
