@@ -13,6 +13,11 @@ class SubmenuItem : public MenuItem, public ConsoleMenu
               const std::string& menuTitle,
               bool addDefaultDisplayMenuItem,
               ConsoleMenu& parent);
+
+ private:
+  ~SubmenuItem() = default;
+  SubmenuItem(const SubmenuItem&) = delete;
+  SubmenuItem operator=(const SubmenuItem&) = delete;
 };
 
 #endif // SUBMENU_ITEM_H

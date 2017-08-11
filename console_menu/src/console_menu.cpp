@@ -1,7 +1,6 @@
 #include <console_menu/console_menu.h>
 
 #include <algorithm>
-#include <iostream>
 
 #include <console_menu/submenu_item.h>
 

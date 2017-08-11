@@ -34,7 +34,6 @@ class ConsoleMenu
   void setTitle(const std::string& menuTitle);
 
   void addMenuItem(char key, const std::string& description, std::function<void()> function);
-  void addMenuItem(MenuItem& menuItem);
 
   ConsoleMenu& addSubmenu(char key,
                           const std::string& submenuTitle,
