@@ -18,8 +18,6 @@ class ConsoleMenu
 
  private:
   std::string title;
-  std::string titleSeperator;
-  std::string menuSeperator;
   std::ostream& outputStream;
   std::list<std::unique_ptr<MenuItem>> menuItems;
   ConsoleMenu* parentMenu;
@@ -29,6 +27,8 @@ class ConsoleMenu
   ConsoleMenu(const std::string& menuTitle,
               std::ostream& outputStream,
               bool addDefaultDisplayMenuItem = false);
+
+  virtual ~ConsoleMenu() = default;
 
   void display();
   void setTitle(const std::string& menuTitle);
@@ -54,6 +54,7 @@ class ConsoleMenu
   std::list<std::unique_ptr<MenuItem>>::iterator findMenuItemWithKey(char key);
 
   void addSubmenuItem(char key, const std::string& submenuName, ConsoleMenu& submenu);
+  void addMenuItem(MenuItem* menuItem);
   void addReturnToRoot(ConsoleMenu& submenu);
   void addReturnToParent(ConsoleMenu& submenu);
 

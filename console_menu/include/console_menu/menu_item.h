@@ -3,6 +3,7 @@
 
 #include <string>
 #include <functional>
+#include <ostream>
 
 class MenuItem
 {
@@ -19,6 +20,8 @@ class MenuItem
   char getKey() const;
   const std::string& getDescription() const;
   void performFunction();
+
+  friend std::ostream& operator<<(std::ostream& outputStream, const MenuItem& menuItem);
 
  private:
   MenuItem(const MenuItem&) = delete;

@@ -23,3 +23,9 @@ void MenuItem::performFunction()
 {
   function();
 }
+
+std::ostream& operator<<(std::ostream& outputStream, const MenuItem& menuItem)
+{
+  outputStream << menuItem.key << ". " << menuItem.description << "." << std::endl;
+  return outputStream;
+}

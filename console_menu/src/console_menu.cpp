@@ -5,8 +5,8 @@
 
 #include <console_menu/submenu_item.h>
 
-const char TITLE_SEPERATOR = '=';
-const char MENU_SEPERATOR = '-';
+const char TITLE_SEPARATOR = '=';
+const char MENU_SEPARATOR = '-';
 
 using namespace std;
 
@@ -31,18 +31,15 @@ void ConsoleMenu::display()
     auto displayTitle = getDisplayTitle();
     outputStream << displayTitle << endl;
 
-    titleSeperator.clear();
-    titleSeperator.append(displayTitle.size(), TITLE_SEPERATOR);
-    menuSeperator.clear();
-    menuSeperator.append(displayTitle.size(), MENU_SEPERATOR);
-
-    outputStream << titleSeperator << endl;
+    string titleSeparator = string().append(displayTitle.size(), TITLE_SEPARATOR);
+    outputStream << titleSeparator << endl;
 
     for (auto& menuItem : menuItems) {
-      outputStream << menuItem->getKey() << ". " << menuItem->getDescription() << "." << endl;
+      outputStream << (*menuItem.get());
     }
 
-    outputStream << menuSeperator << endl;
+    string menuSeparator = string().append(displayTitle.size(), MENU_SEPARATOR);
+    outputStream << menuSeparator << endl;
   }
 }
 
@@ -63,19 +60,22 @@ void ConsoleMenu::addMenuItem(char key,
                               const string& description,
                               function<void()> function)
 {
-  eraseMenuItemWithSameKey(key);
   auto menuItem = new MenuItem(key, description, function);
-  menuItems.emplace_back(menuItem);
+  addMenuItem(menuItem);
+}
 
+void ConsoleMenu::addMenuItem(MenuItem* menuItem)
+{
+  eraseMenuItemWithSameKey(menuItem->getKey());
+  menuItems.emplace_back(menuItem);
   menuItems.sort([](const unique_ptr<MenuItem>& menuItem1, const unique_ptr<MenuItem>& menuItem2) {
-        return menuItem1->getKey() < menuItem2->getKey();
-      });
+      return menuItem1->getKey() < menuItem2->getKey();
+    });
 }
 
 void ConsoleMenu::eraseMenuItemWithSameKey(char key)
 {
   auto menuItem = findMenuItemWithKey(key);
-
   if (menuItem != menuItems.end()) {
     menuItems.erase(menuItem);
   }
@@ -92,13 +92,8 @@ ConsoleMenu& ConsoleMenu::addSubmenu(char key,
                                      const string& submenuTitle,
                                      bool addDefaultDisplayMenuItem)
 {
-  eraseMenuItemWithSameKey(key);
   auto submenu = new SubmenuItem(key, submenuTitle, addDefaultDisplayMenuItem, *this);
-  menuItems.emplace_back(submenu);
-
-  menuItems.sort([](const unique_ptr<MenuItem>& menuItem1, const unique_ptr<MenuItem>& menuItem2) {
-      return menuItem1->getKey() < menuItem2->getKey();
-    });
+  addMenuItem(submenu);
 
   if (parentMenu)
     addReturnToRoot(*submenu);
