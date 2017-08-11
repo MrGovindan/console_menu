@@ -6,8 +6,6 @@
 
 using namespace std;
 
-// -------------------------------------------------------------------------------------------------
-
 TEST(ConsoleMenu, DisplayDefaultMenu)
 {
   ostringstream outputStream;
@@ -24,7 +22,6 @@ TEST(ConsoleMenu, DisplayDefaultMenu)
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
 
-// -------------------------------------------------------------------------------------------------
 
 TEST(ConsoleMenu, AbleToChangeMenuTitle)
 {
@@ -42,7 +39,6 @@ TEST(ConsoleMenu, AbleToChangeMenuTitle)
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
 
-// -------------------------------------------------------------------------------------------------
 
 TEST(ConsoleMenu, DisplayEmptyMenu)
 {
@@ -58,7 +54,6 @@ TEST(ConsoleMenu, DisplayEmptyMenu)
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
 
-// -------------------------------------------------------------------------------------------------
 
 TEST(ConsoleMenu, AbleToAddAMenuItemByComponents)
 {
@@ -76,7 +71,6 @@ TEST(ConsoleMenu, AbleToAddAMenuItemByComponents)
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
 
-// -------------------------------------------------------------------------------------------------
 
 TEST(ConsoleMenu, HandlesKeyForDefaultDisplayMenuItem)
 {
@@ -93,7 +87,6 @@ TEST(ConsoleMenu, HandlesKeyForDefaultDisplayMenuItem)
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
 
-// -------------------------------------------------------------------------------------------------
 
 TEST(ConsoleMenu, HandlesKeyThatHasNoAssociatedMenuItem)
 {
@@ -106,7 +99,6 @@ TEST(ConsoleMenu, HandlesKeyThatHasNoAssociatedMenuItem)
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
 
-// -------------------------------------------------------------------------------------------------
 
 TEST(ConsoleMenu, HandlesKeyForAddedMenuItem)
 {
@@ -123,7 +115,6 @@ TEST(ConsoleMenu, HandlesKeyForAddedMenuItem)
   ASSERT_TRUE(functionWasCalled);
 }
 
-// -------------------------------------------------------------------------------------------------
 
 TEST(ConsoleMenu, DisplaysMultipleMenuItemsAlphabetically)
 {
@@ -141,7 +132,6 @@ TEST(ConsoleMenu, DisplaysMultipleMenuItemsAlphabetically)
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
 
-// -------------------------------------------------------------------------------------------------
 
 TEST(ConsoleMenu, TestSubMenuItem)
 {
@@ -157,7 +147,6 @@ TEST(ConsoleMenu, TestSubMenuItem)
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
 
-// -------------------------------------------------------------------------------------------------
 
 TEST(ConsoleMenu, TestSubMenuDisplayMenuItem)
 {
@@ -180,7 +169,6 @@ TEST(ConsoleMenu, TestSubMenuDisplayMenuItem)
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
 
-// -------------------------------------------------------------------------------------------------
 
 TEST(ConsoleMenu, TestSubMenuReturnToRootMenu)
 {
@@ -209,7 +197,6 @@ TEST(ConsoleMenu, TestSubMenuReturnToRootMenu)
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
 
-// -------------------------------------------------------------------------------------------------
 
 TEST(ConsoleMenu, TestSubMenuReturnToRootMenuFromManySubmenusDown)
 {
@@ -244,7 +231,6 @@ TEST(ConsoleMenu, TestSubMenuReturnToRootMenuFromManySubmenusDown)
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
 
-// -------------------------------------------------------------------------------------------------
 
 TEST(ConsoleMenu, TestSubMenuGoToParentMenu)
 {
@@ -285,7 +271,6 @@ TEST(ConsoleMenu, TestSubMenuGoToParentMenu)
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
 
-// -------------------------------------------------------------------------------------------------
 
 TEST(ConsoleMenu, shouldBeAbleToAddManuSubmenus)
 {
@@ -309,7 +294,6 @@ TEST(ConsoleMenu, shouldBeAbleToAddManuSubmenus)
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
 
-// -------------------------------------------------------------------------------------------------
 
 TEST(ConsoleMenu, shouldOverideExistingMenuItemWhenAddingMenuItemWithSameKey)
 {
@@ -327,7 +311,6 @@ TEST(ConsoleMenu, shouldOverideExistingMenuItemWhenAddingMenuItemWithSameKey)
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
 
-// -------------------------------------------------------------------------------------------------
 
 TEST(ConsoleMenu, shouldOverideExistingSubMenuWhenAddingSubMenuWithSameKey)
 {
@@ -344,5 +327,3 @@ TEST(ConsoleMenu, shouldOverideExistingSubMenuWhenAddingSubMenuWithSameKey)
                       "---------\n");
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
-
-// -------------------------------------------------------------------------------------------------

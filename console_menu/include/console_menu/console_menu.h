@@ -17,8 +17,8 @@ struct MenuItem
 
 class ConsoleMenu
 {
- private: // fields
-  std::string menuTitle;
+ private:
+  std::string title;
   std::string titleSeperator;
   std::string menuSeperator;
   std::ostream& outputStream;
@@ -27,7 +27,7 @@ class ConsoleMenu
   ConsoleMenu* parentMenu;
   ConsoleMenu* activeSubmenu;
 
- private: // methods
+ private:
   ConsoleMenu(const ConsoleMenu&) = delete;
   ConsoleMenu& operator=(const ConsoleMenu&) = delete;
 
@@ -41,7 +41,9 @@ class ConsoleMenu
   void addReturnToRoot(ConsoleMenu& submenu);
   void addReturnToParent(ConsoleMenu& submenu);
 
- public: // methods
+  std::string getDisplayTitle();
+
+ public:
   ConsoleMenu(const std::string& menuTitle,
               std::ostream& outputStream,
               bool addDefaultDisplayMenuItem = false);

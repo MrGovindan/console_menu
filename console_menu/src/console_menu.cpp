@@ -2,26 +2,20 @@
 
 #include <algorithm>
 
-// -------------------------------------------------------------------------------------------------
-
 const char TITLE_SEPERATOR = '=';
 const char MENU_SEPERATOR = '-';
-
-// -------------------------------------------------------------------------------------------------
 
 ConsoleMenu::ConsoleMenu(const std::string& menuTitle,
                          std::ostream& outputStream,
                          bool addDefaultDisplayMenuItem)
-  : outputStream{outputStream}
+  : title{menuTitle}
+  , outputStream{outputStream}
   , parentMenu{nullptr}
   , activeSubmenu{nullptr}
 {
-  setTitle(menuTitle);
   if (addDefaultDisplayMenuItem)
     addMenuItem('m', "Display menu", [&](){display();});
 }
-
-// -------------------------------------------------------------------------------------------------
 
 void ConsoleMenu::display()
 {
@@ -29,7 +23,14 @@ void ConsoleMenu::display()
     activeSubmenu->display();
   }
   else {
-    outputStream << menuTitle << std::endl;
+    auto displayTitle = getDisplayTitle();
+    outputStream << displayTitle << std::endl;
+
+    titleSeperator.clear();
+    titleSeperator.append(displayTitle.size(), TITLE_SEPERATOR);
+    menuSeperator.clear();
+    menuSeperator.append(displayTitle.size(), MENU_SEPERATOR);
+
     outputStream << titleSeperator << std::endl;
 
     for (auto& menuItem : menuItems) {
@@ -40,18 +41,18 @@ void ConsoleMenu::display()
   }
 }
 
-// -------------------------------------------------------------------------------------------------
+std::string ConsoleMenu::getDisplayTitle()
+{
+  if (parentMenu)
+    return std::string(parentMenu->getDisplayTitle() + " > "+ title);
+  else
+    return title;
+}
 
 void ConsoleMenu::setTitle(const std::string& menuTitle)
 {
-  this->menuTitle = menuTitle;
-  titleSeperator.clear();
-  titleSeperator.append(this->menuTitle.size(), TITLE_SEPERATOR);
-  menuSeperator.clear();
-  menuSeperator.append(this->menuTitle.size(), MENU_SEPERATOR);
+  title = menuTitle;
 }
-
-// -------------------------------------------------------------------------------------------------
 
 void ConsoleMenu::addMenuItem(char key,
                               const std::string& description,
@@ -72,16 +73,12 @@ void ConsoleMenu::addMenuItem(char key,
   }
 }
 
-// -------------------------------------------------------------------------------------------------
-
 std::vector<MenuItem>::iterator ConsoleMenu::findExistingMenuItem(char key)
 {
   return std::find_if(menuItems.begin(),
                       menuItems.end(),
                       [&key](MenuItem& menuItem) {return menuItem.key == key;});
 }
-
-// -------------------------------------------------------------------------------------------------
 
 ConsoleMenu& ConsoleMenu::addSubmenu(char key,
                                      const std::string& submenuTitle,
@@ -101,19 +98,15 @@ ConsoleMenu& ConsoleMenu::addSubmenu(char key,
   return submenuReference;
 }
 
-// -------------------------------------------------------------------------------------------------
-
 ConsoleMenu::ConsoleMenu(const std::string& menuTitle,
                          ConsoleMenu& parentMenu,
                          bool addDefaultDisplayMenuItem)
-  : ConsoleMenu(parentMenu.menuTitle + " > " + menuTitle,
+  : ConsoleMenu(menuTitle,
                 parentMenu.outputStream,
                 addDefaultDisplayMenuItem)
 {
   this->parentMenu = &parentMenu;
 }
-
-// -------------------------------------------------------------------------------------------------
 
 void ConsoleMenu::addSubmenuItem(char key, const std::string& submenuName, ConsoleMenu& submenu)
 {
@@ -122,8 +115,6 @@ void ConsoleMenu::addSubmenuItem(char key, const std::string& submenuName, Conso
       display();
     });
 }
-
-// -------------------------------------------------------------------------------------------------
 
 void ConsoleMenu::addReturnToRoot(ConsoleMenu& submenu)
 {
@@ -138,18 +129,14 @@ void ConsoleMenu::addReturnToRoot(ConsoleMenu& submenu)
     });
 }
 
-// -------------------------------------------------------------------------------------------------
-
 void ConsoleMenu::addReturnToParent(ConsoleMenu& submenu)
 {
-  submenu.addMenuItem('b', "Go back to " + menuTitle, [&](){
+  submenu.addMenuItem('b', "Go back to " + submenu.parentMenu->getDisplayTitle(), [&](){
       ConsoleMenu* parentMenu = submenu.parentMenu;
       parentMenu->activeSubmenu = nullptr;
       parentMenu->display();
     });
 }
-
-// -------------------------------------------------------------------------------------------------
 
 void ConsoleMenu::handleKey(char key)
 {
@@ -167,5 +154,3 @@ void ConsoleMenu::handleKey(char key)
       outputStream << "No menu item matches the key '" << key << "'." << std::endl;
   }
 }
-
-// -------------------------------------------------------------------------------------------------
