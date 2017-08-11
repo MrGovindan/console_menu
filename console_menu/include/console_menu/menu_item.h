@@ -6,7 +6,7 @@
 
 class MenuItem
 {
- private:
+ protected:
   char key;
   std::string description;
   std::function<void()> function;

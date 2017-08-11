@@ -1,6 +1,9 @@
 #include <console_menu/console_menu.h>
 
 #include <algorithm>
+#include <iostream>
+
+#include <console_menu/submenu_item.h>
 
 const char TITLE_SEPERATOR = '=';
 const char MENU_SEPERATOR = '-';
@@ -89,18 +92,20 @@ ConsoleMenu& ConsoleMenu::addSubmenu(char key,
                                      const string& submenuTitle,
                                      bool addDefaultDisplayMenuItem)
 {
-  // auto menu = new ConsoleMenu(submenuTitle, *this, addDefaultDisplayMenuItem);
-  // submenus.emplace_back(move(unique_ptr<ConsoleMenu>(menu)));
-  // auto& submenuReference = *(submenus.back().get());
+  eraseMenuItemWithSameKey(key);
+  auto submenu = new SubmenuItem(key, submenuTitle, addDefaultDisplayMenuItem, *this);
+  menuItems.emplace_back(submenu);
 
-  // addSubmenuItem(key, submenuTitle, submenuReference);
+  menuItems.sort([](const unique_ptr<MenuItem>& menuItem1, const unique_ptr<MenuItem>& menuItem2) {
+      return menuItem1->getKey() < menuItem2->getKey();
+    });
 
-  // if (parentMenu)
-  //   addReturnToRoot(submenuReference);
+  if (parentMenu)
+    addReturnToRoot(*submenu);
 
-  // addReturnToParent(submenuReference);
+  addReturnToParent(*submenu);
 
-  // return submenuReference;
+  return *submenu;
 }
 
 ConsoleMenu::ConsoleMenu(const string& menuTitle,

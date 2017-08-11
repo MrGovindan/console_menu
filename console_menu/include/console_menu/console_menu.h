@@ -9,10 +9,13 @@
 #include <memory>
 
 #include "menu_item.h"
-#include "submenu_item.h"
+
+class SubmenuItem;
 
 class ConsoleMenu
 {
+  friend class SubmenuItem;
+
  private:
   std::string title;
   std::string titleSeperator;
