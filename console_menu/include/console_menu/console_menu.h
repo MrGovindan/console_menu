@@ -35,6 +35,8 @@ class ConsoleMenu
               ConsoleMenu& parentMenu,
               bool addDefaultDisplayMenuItem);
 
+  std::vector<MenuItem>::iterator findExistingMenuItem(char key);
+
   void addSubmenuItem(char key, const std::string& submenuName, ConsoleMenu& submenu);
   void addReturnToRoot(ConsoleMenu& submenu);
   void addReturnToParent(ConsoleMenu& submenu);

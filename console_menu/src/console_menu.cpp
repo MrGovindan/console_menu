@@ -57,17 +57,28 @@ void ConsoleMenu::addMenuItem(char key,
                               const std::string& description,
                               std::function<void()> function)
 {
-  menuItems.emplace_back(MenuItem{key, description, function});
-  std::sort(menuItems.begin(),
-            menuItems.end(),
-            [](MenuItem& item1, MenuItem& item2){ return item1.key < item2.key; });
+  auto existingMenuItem = findExistingMenuItem(key);
+
+  if (existingMenuItem != menuItems.end()) {
+    existingMenuItem->description = description;
+    existingMenuItem->function = function;
+  }
+
+  else {
+    menuItems.emplace_back(MenuItem{key, description, function});
+    std::sort(menuItems.begin(),
+              menuItems.end(),
+              [](MenuItem& item1, MenuItem& item2){ return item1.key < item2.key; });
+  }
 }
 
 // -------------------------------------------------------------------------------------------------
 
-void ConsoleMenu::addMenuItem(MenuItem& menuItem)
+std::vector<MenuItem>::iterator ConsoleMenu::findExistingMenuItem(char key)
 {
-  menuItems.push_back(menuItem);
+  return std::find_if(menuItems.begin(),
+                      menuItems.end(),
+                      [&key](MenuItem& menuItem) {return menuItem.key == key;});
 }
 
 // -------------------------------------------------------------------------------------------------

@@ -78,25 +78,6 @@ TEST(ConsoleMenu, AbleToAddAMenuItemByComponents)
 
 // -------------------------------------------------------------------------------------------------
 
-TEST(ConsoleMenu, AbleToAddAWholeMenuItem)
-{
-  ostringstream outputStream;
-  ConsoleMenu menu("Test Menu", outputStream, false);
-
-  MenuItem menuItem{'c', "Check", [](){}};
-  menu.addMenuItem(menuItem);
-  menu.display();
-
-  string expectedMenu("Test Menu\n"
-                      "=========\n"
-                      "c. Check.\n"
-                      "---------\n");
-
-  ASSERT_EQ(expectedMenu, outputStream.str());
-}
-
-// -------------------------------------------------------------------------------------------------
-
 TEST(ConsoleMenu, HandlesKeyForDefaultDisplayMenuItem)
 {
   ostringstream outputStream;
@@ -306,7 +287,7 @@ TEST(ConsoleMenu, TestSubMenuGoToParentMenu)
 
 // -------------------------------------------------------------------------------------------------
 
-TEST(ConsoleMenu, TestMultipleSubMenus)
+TEST(ConsoleMenu, shouldBeAbleToAddManuSubmenus)
 {
   ostringstream outputStream;
   ConsoleMenu menu("Test Menu", outputStream);
@@ -325,6 +306,42 @@ TEST(ConsoleMenu, TestMultipleSubMenus)
                       "=========================\n"
                       "b. Go back to Test Menu.\n"
                       "-------------------------\n");
+  ASSERT_EQ(expectedMenu, outputStream.str());
+}
+
+// -------------------------------------------------------------------------------------------------
+
+TEST(ConsoleMenu, shouldOverideExistingMenuItemWhenAddingMenuItemWithSameKey)
+{
+  ostringstream outputStream;
+  ConsoleMenu menu("Test Menu", outputStream);
+  menu.addMenuItem('s', "menu item 1", [](){});
+  menu.addMenuItem('s', "menu item 2", [](){});
+
+  menu.display();
+
+  string expectedMenu("Test Menu\n"
+                      "=========\n"
+                      "s. menu item 2.\n"
+                      "---------\n");
+  ASSERT_EQ(expectedMenu, outputStream.str());
+}
+
+// -------------------------------------------------------------------------------------------------
+
+TEST(ConsoleMenu, shouldOverideExistingSubMenuWhenAddingSubMenuWithSameKey)
+{
+  ostringstream outputStream;
+  ConsoleMenu menu("Test Menu", outputStream);
+  menu.addSubmenu('s', "submenu item 1");
+  menu.addSubmenu('s', "submenu item 2");
+
+  menu.display();
+
+  string expectedMenu("Test Menu\n"
+                      "=========\n"
+                      "s. submenu item 2.\n"
+                      "---------\n");
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
 
