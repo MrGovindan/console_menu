@@ -6,7 +6,7 @@
 
 using namespace std;
 
-TEST(ConsoleMenu, DisplayDefaultMenu)
+TEST(ConsoleMenu, ShouldDisplayMenuWithDefaultMenuItem)
 {
   ostringstream outputStream;
   ConsoleMenu menu("Test Menu", outputStream, true);
@@ -23,7 +23,7 @@ TEST(ConsoleMenu, DisplayDefaultMenu)
 }
 
 
-TEST(ConsoleMenu, AbleToChangeMenuTitle)
+TEST(ConsoleMenu, ShouldDisplayMenuWithChangedTitle)
 {
   ostringstream outputStream;
   ConsoleMenu menu("Test Menu", outputStream, true);
@@ -40,7 +40,7 @@ TEST(ConsoleMenu, AbleToChangeMenuTitle)
 }
 
 
-TEST(ConsoleMenu, DisplayEmptyMenu)
+TEST(ConsoleMenu, ShouldDisplayMenuWithNoMenuItems)
 {
   ostringstream outputStream;
   ConsoleMenu menu("Test Menu", outputStream);
@@ -55,7 +55,7 @@ TEST(ConsoleMenu, DisplayEmptyMenu)
 }
 
 
-TEST(ConsoleMenu, AbleToAddAMenuItemByComponents)
+TEST(ConsoleMenu, ShouldDisplayMenuWithAddedMenuItem)
 {
   ostringstream outputStream;
   ConsoleMenu menu("Test Menu", outputStream, false);
@@ -72,7 +72,7 @@ TEST(ConsoleMenu, AbleToAddAMenuItemByComponents)
 }
 
 
-TEST(ConsoleMenu, HandlesKeyForDefaultDisplayMenuItem)
+TEST(ConsoleMenu, ShouldHandleKeyForDefaultMenuItem)
 {
   ostringstream outputStream;
   ConsoleMenu menu("Test Menu", outputStream, true);
@@ -88,7 +88,7 @@ TEST(ConsoleMenu, HandlesKeyForDefaultDisplayMenuItem)
 }
 
 
-TEST(ConsoleMenu, HandlesKeyThatHasNoAssociatedMenuItem)
+TEST(ConsoleMenu, ShouldDisplayMessageWhenHandlingAKeyThatHasNoAssociatedMenuItem)
 {
   ostringstream outputStream;
   ConsoleMenu menu("Test Menu", outputStream);
@@ -100,7 +100,7 @@ TEST(ConsoleMenu, HandlesKeyThatHasNoAssociatedMenuItem)
 }
 
 
-TEST(ConsoleMenu, HandlesKeyForAddedMenuItem)
+TEST(ConsoleMenu, ShouldCallFunctionPassedInAMenuItem)
 {
   ostringstream outputStream;
   ConsoleMenu menu("Test Menu", outputStream);
@@ -116,7 +116,7 @@ TEST(ConsoleMenu, HandlesKeyForAddedMenuItem)
 }
 
 
-TEST(ConsoleMenu, DisplaysMultipleMenuItemsAlphabetically)
+TEST(ConsoleMenu, ShouldDisplayMenuWithMultipleMenuItemsAdded)
 {
   ostringstream outputStream;
   ConsoleMenu menu("Test Menu", outputStream, true);
@@ -133,7 +133,7 @@ TEST(ConsoleMenu, DisplaysMultipleMenuItemsAlphabetically)
 }
 
 
-TEST(ConsoleMenu, TestSubMenuItem)
+TEST(ConsoleMenu, ShouldDisplaySubmenu)
 {
   ostringstream outputStream;
   ConsoleMenu menu("Test Menu", outputStream);
@@ -148,7 +148,7 @@ TEST(ConsoleMenu, TestSubMenuItem)
 }
 
 
-TEST(ConsoleMenu, TestSubMenuDisplayMenuItem)
+TEST(ConsoleMenu, ShouldDisplaySubmenuAndHandleKeyForSubmenu)
 {
   ostringstream outputStream;
   ConsoleMenu menu("Test Menu", outputStream);
@@ -170,7 +170,7 @@ TEST(ConsoleMenu, TestSubMenuDisplayMenuItem)
 }
 
 
-TEST(ConsoleMenu, TestSubMenuReturnToRootMenu)
+TEST(ConsoleMenu, ShouldReturnToRootMenuFromSubmenu)
 {
   ostringstream outputStream;
   ConsoleMenu menu("Test Menu", outputStream);
@@ -198,7 +198,7 @@ TEST(ConsoleMenu, TestSubMenuReturnToRootMenu)
 }
 
 
-TEST(ConsoleMenu, TestSubMenuReturnToRootMenuFromManySubmenusDown)
+TEST(ConsoleMenu, ShouldReturnToRootMenuFromMultipleSubmenusDown)
 {
   ostringstream outputStream;
   ConsoleMenu menu("Test Menu", outputStream);
@@ -232,7 +232,7 @@ TEST(ConsoleMenu, TestSubMenuReturnToRootMenuFromManySubmenusDown)
 }
 
 
-TEST(ConsoleMenu, TestSubMenuGoToParentMenu)
+TEST(ConsoleMenu, ShouldReturnToParentMenuFromSubmenu)
 {
   ostringstream outputStream;
   ConsoleMenu menu("Test Menu", outputStream);
@@ -272,7 +272,7 @@ TEST(ConsoleMenu, TestSubMenuGoToParentMenu)
 }
 
 
-TEST(ConsoleMenu, shouldBeAbleToAddManySubmenus)
+TEST(ConsoleMenu, ShouldDisplayAddedSubmenus)
 {
   ostringstream outputStream;
   ConsoleMenu menu("Test Menu", outputStream);
@@ -295,7 +295,7 @@ TEST(ConsoleMenu, shouldBeAbleToAddManySubmenus)
 }
 
 
-TEST(ConsoleMenu, shouldOverideExistingMenuItemWhenAddingMenuItemWithSameKey)
+TEST(ConsoleMenu, ShouldOverrideExistingMenuItemWithSameKey)
 {
   ostringstream outputStream;
   ConsoleMenu menu("Test Menu", outputStream);
@@ -312,7 +312,7 @@ TEST(ConsoleMenu, shouldOverideExistingMenuItemWhenAddingMenuItemWithSameKey)
 }
 
 
-TEST(ConsoleMenu, shouldOverideExistingSubMenuWhenAddingSubMenuWithSameKey)
+TEST(ConsoleMenu, ShouldOverrideExistingSubmenuWithSameKey)
 {
   ostringstream outputStream;
   ConsoleMenu menu("Test Menu", outputStream);
