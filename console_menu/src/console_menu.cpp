@@ -75,7 +75,7 @@ void ConsoleMenu::addMenuItem(MenuItem* menuItem)
 void ConsoleMenu::eraseMenuItemWithSameKey(char key)
 {
   auto menuItem = findMenuItemWithKey(key);
-  if (menuItem != menuItems.end()) {
+  if (menuItemWasFound(menuItem)) {
     menuItems.erase(menuItem);
   }
 }
@@ -150,9 +150,14 @@ void ConsoleMenu::handleKey(char key)
   else {
     auto menuItem = findMenuItemWithKey(key);
 
-    if (menuItem != menuItems.end())
+    if (menuItemWasFound(menuItem))
       (*menuItem)->performFunction();
     else
       outputStream << "No menu item matches the key '" << key << "'." << endl;
   }
+}
+
+bool ConsoleMenu::menuItemWasFound(std::list<std::unique_ptr<MenuItem>>::iterator& iterator)
+{
+  return iterator != menuItems.end();
 }
