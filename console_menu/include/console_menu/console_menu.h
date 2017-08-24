@@ -55,9 +55,11 @@ class ConsoleMenu
   void addMenuItem(MenuItem* menuItem);
   void addReturnToRoot(ConsoleMenu& submenu);
   void addReturnToParent(ConsoleMenu& submenu);
-  bool menuItemWasFound(std::list<std::unique_ptr<MenuItem>>::iterator& iterator);
+  bool menuItemWasFound(std::list<std::unique_ptr<MenuItem>>::iterator& iterator) const;
 
-  std::string getDisplayTitle();
+  std::string getDisplayTitle() const;
+  virtual char getTitleSeparator() const;
+  virtual char getMenuSeparator() const;
 };
 
 #endif // CONSOLE_MENU_H

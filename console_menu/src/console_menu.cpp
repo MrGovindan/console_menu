@@ -30,19 +30,29 @@ void ConsoleMenu::display()
     auto displayTitle = getDisplayTitle();
     outputStream << displayTitle << endl;
 
-    string titleSeparator = string().append(displayTitle.size(), TITLE_SEPARATOR);
+    string titleSeparator = string().append(displayTitle.size(), getTitleSeparator());
     outputStream << titleSeparator << endl;
 
     for (auto& menuItem : menuItems) {
       outputStream << (*menuItem.get());
     }
 
-    string menuSeparator = string().append(displayTitle.size(), MENU_SEPARATOR);
+    string menuSeparator = string().append(displayTitle.size(), getMenuSeparator());
     outputStream << menuSeparator << endl;
   }
 }
 
-string ConsoleMenu::getDisplayTitle()
+char ConsoleMenu::getTitleSeparator() const
+{
+  return TITLE_SEPARATOR;
+}
+
+char ConsoleMenu::getMenuSeparator() const
+{
+  return MENU_SEPARATOR;
+}
+
+string ConsoleMenu::getDisplayTitle() const
 {
   if (parentMenu)
     return string(parentMenu->getDisplayTitle() + " > "+ title);
@@ -157,7 +167,7 @@ void ConsoleMenu::handleKey(char key)
   }
 }
 
-bool ConsoleMenu::menuItemWasFound(std::list<std::unique_ptr<MenuItem>>::iterator& iterator)
+bool ConsoleMenu::menuItemWasFound(std::list<std::unique_ptr<MenuItem>>::iterator& iterator) const
 {
   return iterator != menuItems.end();
 }
