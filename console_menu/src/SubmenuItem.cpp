@@ -1,12 +1,15 @@
-#include <console_menu/submenu_item.h>
+#include <console_menu/SubmenuItem.h>
 
 SubmenuItem::SubmenuItem(char key,
                          const std::string& menuTitle,
                          bool addDefaultDisplayMenuItem,
                          ConsoleMenu& parent)
-  : MenuItem{key, menuTitle, [&]() {
-      parent.activeSubmenu = (ConsoleMenu*) this;
-      parent.display();
-    }}
+  : MenuItem{key,
+             menuTitle,
+             [&]() {
+               parent.active_submenu = (ConsoleMenu*)this;
+               parent.display();
+             }}
   , ConsoleMenu{menuTitle, parent, addDefaultDisplayMenuItem}
-{}
+{
+}

@@ -3,18 +3,17 @@
 
 #include <string>
 
-#include "menu_item.h"
-#include "console_menu.h"
+#include "ConsoleMenu.h"
+#include "MenuItem.h"
 
-class SubmenuItem : public MenuItem, public ConsoleMenu
-{
- public:
+class SubmenuItem : public MenuItem, public ConsoleMenu {
+public:
   SubmenuItem(char key,
               const std::string& menuTitle,
               bool addDefaultDisplayMenuItem,
               ConsoleMenu& parent);
 
- private:
+private:
   ~SubmenuItem() = default;
   SubmenuItem(const SubmenuItem&) = delete;
   SubmenuItem operator=(const SubmenuItem&) = delete;

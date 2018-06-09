@@ -1,11 +1,10 @@
 #include <iostream>
 
-#include <console_menu/console_menu.h>
+#include <console_menu/ConsoleMenu.h>
 
 using namespace std;
 
-class Adder
-{
+class Adder {
 public:
   void addTwoValues()
   {
@@ -38,24 +37,20 @@ int main()
 
   auto& adderMenu = mathMenu.addSubmenu('a', "Adder");
   Adder adder;
-  adderMenu.addMenuItem('2',
-                        "Add two values together",
-                        std::bind(&Adder::addTwoValues, &adder));
-  adderMenu.addMenuItem('2',
-                        "Add two values together",
-                        std::bind(&Adder::addTwoValues, &adder));
+  adderMenu.addMenuItem('2', "Add two values together", std::bind(&Adder::addTwoValues, &adder));
+  adderMenu.addMenuItem('2', "Add two values together", std::bind(&Adder::addTwoValues, &adder));
 
   auto& complexMenu = mathMenu.addSubmenu('c', "Complex Operations");
   complexMenu.addSubmenu('d', "Division", true);
 
   auto& multiplicationMenu = complexMenu.addSubmenu('m', "Multiplication");
-  multiplicationMenu.addMenuItem('m', "Multiply two values", [&mathMenu](){
-      multiplyTwoValues();
-      mathMenu.display();
-    });
+  multiplicationMenu.addMenuItem('m', "Multiply two values", [&mathMenu]() {
+    multiplyTwoValues();
+    mathMenu.display();
+  });
 
   bool appRunning = true;
-  mathMenu.addMenuItem('x', "Exit", [&appRunning](){appRunning = false;});
+  mathMenu.addMenuItem('x', "Exit", [&appRunning]() { appRunning = false; });
 
   mathMenu.display();
 

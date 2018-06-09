@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-#include <console_menu/console_menu.h>
+#include <console_menu/ConsoleMenu.h>
 
 using namespace std;
 
@@ -13,7 +13,6 @@ TEST(ConsoleMenu, ShouldDisplayMenuWithDefaultMenuItem)
 
   menu.display();
 
-
   string expectedMenu("Test Menu\n"
                       "=========\n"
                       "m. Display menu.\n"
@@ -21,7 +20,6 @@ TEST(ConsoleMenu, ShouldDisplayMenuWithDefaultMenuItem)
 
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
-
 
 TEST(ConsoleMenu, ShouldDisplayMenuWithChangedTitle)
 {
@@ -39,7 +37,6 @@ TEST(ConsoleMenu, ShouldDisplayMenuWithChangedTitle)
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
 
-
 TEST(ConsoleMenu, ShouldDisplayMenuWithNoMenuItems)
 {
   ostringstream outputStream;
@@ -54,13 +51,12 @@ TEST(ConsoleMenu, ShouldDisplayMenuWithNoMenuItems)
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
 
-
 TEST(ConsoleMenu, ShouldDisplayMenuWithAddedMenuItem)
 {
   ostringstream outputStream;
   ConsoleMenu menu("Test Menu", outputStream, false);
 
-  menu.addMenuItem('c', "Check", [](){});
+  menu.addMenuItem('c', "Check", []() {});
   menu.display();
 
   string expectedMenu("Test Menu\n"
@@ -70,7 +66,6 @@ TEST(ConsoleMenu, ShouldDisplayMenuWithAddedMenuItem)
 
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
-
 
 TEST(ConsoleMenu, ShouldHandleKeyForDefaultMenuItem)
 {
@@ -87,7 +82,6 @@ TEST(ConsoleMenu, ShouldHandleKeyForDefaultMenuItem)
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
 
-
 TEST(ConsoleMenu, ShouldDisplayMessageWhenHandlingAKeyThatHasNoAssociatedMenuItem)
 {
   ostringstream outputStream;
@@ -99,28 +93,24 @@ TEST(ConsoleMenu, ShouldDisplayMessageWhenHandlingAKeyThatHasNoAssociatedMenuIte
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
 
-
 TEST(ConsoleMenu, ShouldCallFunctionPassedInAMenuItem)
 {
   ostringstream outputStream;
   ConsoleMenu menu("Test Menu", outputStream);
 
   bool functionWasCalled = false;
-  menu.addMenuItem('c', "Check key press", [&](){
-      functionWasCalled = true;
-    });
+  menu.addMenuItem('c', "Check key press", [&]() { functionWasCalled = true; });
 
   menu.handleKey('c');
 
   ASSERT_TRUE(functionWasCalled);
 }
 
-
 TEST(ConsoleMenu, ShouldDisplayMenuWithMultipleMenuItemsAdded)
 {
   ostringstream outputStream;
   ConsoleMenu menu("Test Menu", outputStream, true);
-  menu.addMenuItem('c', "Test function", [&](){});
+  menu.addMenuItem('c', "Test function", [&]() {});
 
   menu.display();
 
@@ -131,7 +121,6 @@ TEST(ConsoleMenu, ShouldDisplayMenuWithMultipleMenuItemsAdded)
                       "---------\n");
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
-
 
 TEST(ConsoleMenu, ShouldDisplaySubmenu)
 {
@@ -146,7 +135,6 @@ TEST(ConsoleMenu, ShouldDisplaySubmenu)
                       "------------------------\n");
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
-
 
 TEST(ConsoleMenu, ShouldDisplaySubmenuAndHandleKeyForSubmenu)
 {
@@ -168,7 +156,6 @@ TEST(ConsoleMenu, ShouldDisplaySubmenuAndHandleKeyForSubmenu)
                       "------------------------\n");
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
-
 
 TEST(ConsoleMenu, ShouldReturnToRootMenuFromSubmenu)
 {
@@ -196,7 +183,6 @@ TEST(ConsoleMenu, ShouldReturnToRootMenuFromSubmenu)
                       "---------\n");
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
-
 
 TEST(ConsoleMenu, ShouldReturnToRootMenuFromMultipleSubmenusDown)
 {
@@ -230,7 +216,6 @@ TEST(ConsoleMenu, ShouldReturnToRootMenuFromMultipleSubmenusDown)
                       "---------\n");
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
-
 
 TEST(ConsoleMenu, ShouldReturnToParentMenuFromSubmenu)
 {
@@ -271,7 +256,6 @@ TEST(ConsoleMenu, ShouldReturnToParentMenuFromSubmenu)
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
 
-
 TEST(ConsoleMenu, ShouldDisplayAddedSubmenus)
 {
   ostringstream outputStream;
@@ -294,13 +278,12 @@ TEST(ConsoleMenu, ShouldDisplayAddedSubmenus)
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
 
-
 TEST(ConsoleMenu, ShouldOverrideExistingMenuItemWithSameKey)
 {
   ostringstream outputStream;
   ConsoleMenu menu("Test Menu", outputStream);
-  menu.addMenuItem('s', "menu item 1", [](){});
-  menu.addMenuItem('s', "menu item 2", [](){});
+  menu.addMenuItem('s', "menu item 1", []() {});
+  menu.addMenuItem('s', "menu item 2", []() {});
 
   menu.display();
 
@@ -310,7 +293,6 @@ TEST(ConsoleMenu, ShouldOverrideExistingMenuItemWithSameKey)
                       "---------\n");
   ASSERT_EQ(expectedMenu, outputStream.str());
 }
-
 
 TEST(ConsoleMenu, ShouldOverrideExistingSubmenuWithSameKey)
 {
