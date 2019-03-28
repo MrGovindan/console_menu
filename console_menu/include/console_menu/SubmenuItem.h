@@ -8,10 +8,7 @@
 
 class SubmenuItem : public MenuItem, public ConsoleMenu {
 public:
-  SubmenuItem(char key,
-              const std::string& menuTitle,
-              bool addDefaultDisplayMenuItem,
-              ConsoleMenu& parent);
+  SubmenuItem(char key, std::string menuTitle, bool addDefaultDisplayMenuItem, ConsoleMenu& parent);
 
 private:
   ~SubmenuItem() = default;

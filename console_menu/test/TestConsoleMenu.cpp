@@ -4,7 +4,8 @@
 
 #include <console_menu/ConsoleMenu.h>
 
-using namespace std;
+using std::ostringstream;
+using std::string;
 
 TEST(ConsoleMenu, ShouldDisplayMenuWithDefaultMenuItem)
 {

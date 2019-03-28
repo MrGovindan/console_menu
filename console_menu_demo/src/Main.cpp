@@ -59,4 +59,19 @@ int main()
     cin >> key;
     mathMenu.handleKey(key);
   }
+
+  /* std::cout << "My Application\n"; */
+  /* std::cout << "==============\n"; */
+  /* std::cout << "x. Exit\n"; */
+
+  /* bool running = true; */
+  /* while (running) { */
+  /*   char key; */
+  /*   std::cin >> key; */
+  /*   switch (key) { */
+  /*     case 'x': */
+  /*       running = false; */
+  /*       break; */
+  /*   } */
+  /* } */
 }

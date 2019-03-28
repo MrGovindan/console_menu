@@ -1,9 +1,9 @@
 #include <console_menu/MenuItem.h>
 
-MenuItem::MenuItem(char key, const std::string& description, std::function<void()> function)
+MenuItem::MenuItem(char key, std::string description, std::function<void()> function)
   : key{key}
-  , description{description}
-  , action{function}
+  , description{std::move(description)}
+  , action{std::move(function)}
 {
 }
 

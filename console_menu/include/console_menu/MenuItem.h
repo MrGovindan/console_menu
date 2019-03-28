@@ -12,7 +12,7 @@ protected:
   std::function<void()> action;
 
 public:
-  MenuItem(char key, const std::string& description, std::function<void()> function);
+  MenuItem(char key, std::string description, std::function<void()> function);
   virtual ~MenuItem() = default;
   char getKey() const;
   void performAction();

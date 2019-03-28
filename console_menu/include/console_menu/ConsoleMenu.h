@@ -22,7 +22,7 @@ private:
   ConsoleMenu* active_submenu;
 
 public:
-  ConsoleMenu(const std::string& menuTitle,
+  ConsoleMenu(std::string menuTitle,
               std::ostream& output_stream,
               bool add_display_menu_item = false);
 
@@ -30,7 +30,7 @@ public:
 
   void display();
 
-  void setTitle(const std::string& menu_title);
+  void setTitle(std::string menu_title);
 
   void addMenuItem(char key, const std::string& description, std::function<void()> function);
 
@@ -49,7 +49,7 @@ private:
               bool add_default_display_menu_item);
 
   void eraseMenuItemWithKey(char key);
-  std::list<std::unique_ptr<MenuItem>>::iterator findMenuItemWithKey(char key);
+  std::list<std::unique_ptr<MenuItem>>::iterator findMenuItemForKey(char key);
 
   void addSubmenuItem(char key, const std::string& submenu_title, ConsoleMenu& submenu);
   void addMenuItem(MenuItem* menu_item);
