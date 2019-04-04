@@ -23,3 +23,5 @@ target_link_libraries (test_console_menu
   console_menu
   gtest
   )
+
+add_test(unit_test test_console_menu)

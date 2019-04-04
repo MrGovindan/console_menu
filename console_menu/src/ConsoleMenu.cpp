@@ -73,9 +73,7 @@ void ConsoleMenu::addMenuItem(MenuItem* menu_item)
   eraseMenuItemWithKey(menu_item->getKey());
   menu_items.emplace_back(menu_item);
   menu_items.sort(
-    [](const unique_ptr<MenuItem>& menu_item1, const unique_ptr<MenuItem>& menu_item2) {
-      return menu_item1->getKey() < menu_item2->getKey();
-    });
+    [](auto& menu_item1, auto& menu_item2) { return menu_item1->getKey() < menu_item2->getKey(); });
 }
 
 void ConsoleMenu::eraseMenuItemWithKey(char key)
@@ -164,7 +162,7 @@ void ConsoleMenu::handleKey(char key)
   }
 }
 
-bool ConsoleMenu::menuItemWasFound(std::list<std::unique_ptr<MenuItem>>::iterator& iterator) const
+bool ConsoleMenu::menuItemWasFound(list<unique_ptr<MenuItem>>::iterator& iterator) const
 {
   return iterator != menu_items.end();
 }

@@ -10,6 +10,8 @@ IF( EXISTS "${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json" )
   )
 ENDIF()
 
+enable_testing()
+
 add_subdirectory(console_menu)
 add_subdirectory(console_menu_demo)
 add_subdirectory(libs/googletest)
