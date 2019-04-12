@@ -1,7 +1,7 @@
 #include <console_menu/SubmenuItem.h>
 
 SubmenuItem::SubmenuItem(char key,
-                         std::string menuTitle,
+                         const std::string& menuTitle,
                          bool addDefaultDisplayMenuItem,
                          ConsoleMenu& parent)
   : MenuItem{key,

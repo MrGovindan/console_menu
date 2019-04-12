@@ -2,3 +2,5 @@
 /compile_commands.json
 /.projectile
 /.dir-locals.el
+.lvimrc
+.clang-format

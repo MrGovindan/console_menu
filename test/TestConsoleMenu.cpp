@@ -190,7 +190,7 @@ TEST(ConsoleMenu, ShouldReturnToRootMenuFromMultipleSubmenusDown)
   ostringstream outputStream;
   ConsoleMenu menu("Test Menu", outputStream);
   auto& submenu1 = menu.addSubmenu('s', "Test submenu1");
-  ConsoleMenu& submenu2 = submenu1.addSubmenu('r', "Test submenu2");
+  submenu1.addSubmenu('r', "Test submenu2");
 
   menu.display();
   menu.handleKey('s');
@@ -223,7 +223,7 @@ TEST(ConsoleMenu, ShouldReturnToParentMenuFromSubmenu)
   ostringstream outputStream;
   ConsoleMenu menu("Test Menu", outputStream);
   auto& submenu1 = menu.addSubmenu('s', "Test submenu1");
-  ConsoleMenu& submenu2 = submenu1.addSubmenu('r', "Test submenu2");
+  submenu1.addSubmenu('r', "Test submenu2");
 
   menu.display();
   menu.handleKey('s');
@@ -261,8 +261,8 @@ TEST(ConsoleMenu, ShouldDisplayAddedSubmenus)
 {
   ostringstream outputStream;
   ConsoleMenu menu("Test Menu", outputStream);
-  auto& submenu1 = menu.addSubmenu('s', "Test submenu1");
-  auto& submenu2 = menu.addSubmenu('r', "Test submenu2");
+  menu.addSubmenu('s', "Test submenu1");
+  menu.addSubmenu('r', "Test submenu2");
 
   menu.display();
   menu.handleKey('s');

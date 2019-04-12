@@ -1,17 +1,46 @@
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 3.10)
 
-project(console_menu VERSION 0.1 LANGUAGES CXX)
+project(libconsole_menu LANGUAGES CXX)
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-IF( EXISTS "${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json" )
-  EXECUTE_PROCESS( COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    ${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json
-    ${CMAKE_CURRENT_SOURCE_DIR}/compile_commands.json
-  )
-ENDIF()
+add_subdirectory(libs/googletest)
 
 enable_testing()
 
-add_subdirectory(console_menu)
-add_subdirectory(console_menu_demo)
-add_subdirectory(libs/googletest)
+# Console Menu Library -----------------------------------------------------------------------------
+add_library(console_menu
+  src/ConsoleMenu.cpp
+  src/MenuItem.cpp
+  src/SubmenuItem.cpp
+  )
+
+target_include_directories(console_menu
+  PUBLIC
+    include
+  )
+
+target_compile_features(console_menu
+  PRIVATE
+    cxx_std_14
+  )
+
+target_compile_options(console_menu
+  PRIVATE
+    -Wall
+    -Werror
+  )
+
+# Console Menu Test --------------------------------------------------------------------------------
+add_executable(test_console_menu
+  test/TestMain.cpp
+  test/TestConsoleMenu.cpp
+  )
+
+target_link_libraries (test_console_menu
+  PRIVATE
+    console_menu
+    gtest
+  )
+
+add_test(unit_test test_console_menu)
+
+add_subdirectory(examples)

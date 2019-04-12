@@ -26,13 +26,16 @@ public:
               std::ostream& output_stream,
               bool add_display_menu_item = false);
 
+  ConsoleMenu(const ConsoleMenu&) = delete;
+  ConsoleMenu& operator=(const ConsoleMenu&) = delete;
+
   virtual ~ConsoleMenu() = default;
 
   void display();
 
   void setTitle(std::string menu_title);
 
-  void addMenuItem(char key, const std::string& description, std::function<void()> function);
+  void addMenuItem(char key, const std::string& description, std::function<void()> action);
 
   ConsoleMenu& addSubmenu(char key,
                           const std::string& submenu_title,
@@ -41,9 +44,6 @@ public:
   void handleKey(char key);
 
 private:
-  ConsoleMenu(const ConsoleMenu&) = delete;
-  ConsoleMenu& operator=(const ConsoleMenu&) = delete;
-
   ConsoleMenu(const std::string& menu_title,
               ConsoleMenu& parent_menu,
               bool add_default_display_menu_item);

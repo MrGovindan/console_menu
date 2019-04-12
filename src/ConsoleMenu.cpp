@@ -1,7 +1,6 @@
-#include <console_menu/ConsoleMenu.h>
-
 #include <algorithm>
 
+#include <console_menu/ConsoleMenu.h>
 #include <console_menu/SubmenuItem.h>
 
 const char TITLE_SEPARATOR = '=';
@@ -63,9 +62,11 @@ void ConsoleMenu::setTitle(string menu_title)
   this->menu_title = std::move(menu_title);
 }
 
-void ConsoleMenu::addMenuItem(char key, const string& description, function<void()> action)
+void ConsoleMenu::addMenuItem(char key,
+                              const std::string& description,
+                              std::function<void()> action)
 {
-  addMenuItem(new MenuItem(key, description, action));
+  addMenuItem(new MenuItem{key, description, std::move(action)});
 }
 
 void ConsoleMenu::addMenuItem(MenuItem* menu_item)
