@@ -45,16 +45,12 @@ void ConsoleMenu::display()
 
 string ConsoleMenu::getDisplayTitle() const
 {
-  string title;
-
   if (parent_menu != nullptr) {
-    title = string(parent_menu->getDisplayTitle() + " > " + menu_title);
+    return string(parent_menu->getDisplayTitle() + " > " + menu_title);
   }
   else {
-    title = menu_title;
+    return menu_title;
   }
-
-  return title;
 }
 
 void ConsoleMenu::setTitle(string menu_title)

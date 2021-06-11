@@ -4,3 +4,6 @@
 /.dir-locals.el
 .lvimrc
 .clang-format
+/.vs
+/out/build/x64-Debug
+/CMakeSettings.json

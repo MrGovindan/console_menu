@@ -33,45 +33,31 @@ void multiplyTwoValues()
 
 int main()
 {
-  ConsoleMenu mathMenu("Math Menu", cout);
+  ConsoleMenu math_menu("Math Menu", cout);
 
-  auto& adderMenu = mathMenu.addSubmenu('a', "Adder");
+  auto& adder_menu = math_menu.addSubmenu('a', "Adder");
+
+  // Adding a class member variable as an menu action
   Adder adder;
-  adderMenu.addMenuItem('2', "Add two values together", std::bind(&Adder::addTwoValues, &adder));
-  adderMenu.addMenuItem('2', "Add two values together", std::bind(&Adder::addTwoValues, &adder));
+  adder_menu.addMenuItem('2', "Add two values together", std::bind(&Adder::addTwoValues, &adder));
 
-  auto& complexMenu = mathMenu.addSubmenu('c', "Complex Operations");
-  complexMenu.addSubmenu('d', "Division", true);
+  auto& complex_menu = math_menu.addSubmenu('c', "Complex Operations");
 
-  auto& multiplicationMenu = complexMenu.addSubmenu('m', "Multiplication");
-  multiplicationMenu.addMenuItem('m', "Multiply two values", [&mathMenu]() {
+  // Adding a lambda function as a menu action
+  auto& multiplication_menu = complex_menu.addSubmenu('m', "Multiplication");
+  multiplication_menu.addMenuItem('m', "Multiply two values", [&math_menu]() {
     multiplyTwoValues();
-    mathMenu.display();
+    math_menu.display();
   });
 
-  bool appRunning = true;
-  mathMenu.addMenuItem('x', "Exit", [&appRunning]() { appRunning = false; });
+  bool app_running = true;
+  math_menu.addMenuItem('x', "Exit", [&app_running]() { app_running = false; });
 
-  mathMenu.display();
+  math_menu.display();
 
   char key;
-  while (appRunning) {
+  while (app_running) {
     cin >> key;
-    mathMenu.handleKey(key);
+    math_menu.handleKey(key);
   }
-
-  /* std::cout << "My Application\n"; */
-  /* std::cout << "==============\n"; */
-  /* std::cout << "x. Exit\n"; */
-
-  /* bool running = true; */
-  /* while (running) { */
-  /*   char key; */
-  /*   std::cin >> key; */
-  /*   switch (key) { */
-  /*     case 'x': */
-  /*       running = false; */
-  /*       break; */
-  /*   } */
-  /* } */
 }

@@ -1,312 +1,273 @@
 #include <sstream>
 
-#include <gtest/gtest.h>
+#include "catch.hpp">
 
 #include <console_menu/ConsoleMenu.h>
 
 using std::ostringstream;
 using std::string;
 
-TEST(ConsoleMenu, ShouldDisplayMenuWithDefaultMenuItem)
+TEST_CASE("ConsoleMenu with Display Menu Item")
 {
-  ostringstream outputStream;
-  ConsoleMenu menu("Test Menu", outputStream, true);
+	ostringstream outputStream;
+	ConsoleMenu menu("Test Menu", outputStream, true);
 
-  menu.display();
+	SECTION("ShouldDisplayMenuWithDefaultMenuItem")
+	{
+		menu.display();
 
-  string expectedMenu("Test Menu\n"
-                      "=========\n"
-                      "m. Display menu.\n"
-                      "---------\n");
+		string expectedOutput("Test Menu\n"
+			"=========\n"
+			"m. Display menu.\n"
+			"---------\n");
 
-  ASSERT_EQ(expectedMenu, outputStream.str());
+		REQUIRE(expectedOutput == outputStream.str());
+	}
+
+	SECTION("ShouldDisplayMenuWithChangedTitle")
+	{
+		menu.setTitle("Another Title");
+
+		menu.display();
+
+		string expectedOutput("Another Title\n"
+			"=============\n"
+			"m. Display menu.\n"
+			"-------------\n");
+
+		REQUIRE(expectedOutput == outputStream.str());
+	}
+
+	SECTION("ShouldHandleKeyForDefaultMenuItem")
+	{
+		menu.handleKey('m');
+
+		string expectedOutput("Test Menu\n"
+			"=========\n"
+			"m. Display menu.\n"
+			"---------\n");
+
+		REQUIRE(expectedOutput == outputStream.str());
+	}
+
+	SECTION("ShouldDisplayMenuWithMultipleMenuItemsAdded")
+	{
+		menu.addMenuItem('c', "Test function", [&]() {});
+
+		menu.display();
+
+		string expectedOutput("Test Menu\n"
+			"=========\n"
+			"c. Test function.\n"
+			"m. Display menu.\n"
+			"---------\n");
+		REQUIRE(expectedOutput == outputStream.str());
+	}
 }
 
-TEST(ConsoleMenu, ShouldDisplayMenuWithChangedTitle)
+TEST_CASE("ConsoleMenu without Display Menu Item")
 {
-  ostringstream outputStream;
-  ConsoleMenu menu("Test Menu", outputStream, true);
-  menu.setTitle("Another Title");
+	ostringstream outputStream;
+	ConsoleMenu menu("Test Menu", outputStream, false);
 
-  menu.display();
+	SECTION("ShouldDisplayMenuWithNoMenuItems")
+	{
+		menu.display();
 
-  string expectedMenu("Another Title\n"
-                      "=============\n"
-                      "m. Display menu.\n"
-                      "-------------\n");
+		string expectedOutput("Test Menu\n"
+			"=========\n"
+			"---------\n");
 
-  ASSERT_EQ(expectedMenu, outputStream.str());
-}
+		REQUIRE(expectedOutput == outputStream.str());
+	}
 
-TEST(ConsoleMenu, ShouldDisplayMenuWithNoMenuItems)
-{
-  ostringstream outputStream;
-  ConsoleMenu menu("Test Menu", outputStream);
+	SECTION("ShouldDisplayMenuWithAddedMenuItem")
+	{
+		menu.addMenuItem('c', "Check", []() {});
+		menu.display();
 
-  menu.display();
+		string expectedOutput("Test Menu\n"
+			"=========\n"
+			"c. Check.\n"
+			"---------\n");
 
-  string expectedMenu("Test Menu\n"
-                      "=========\n"
-                      "---------\n");
+		REQUIRE(expectedOutput == outputStream.str());
+	}
 
-  ASSERT_EQ(expectedMenu, outputStream.str());
-}
+	SECTION("ShouldOverrideExistingSubmenuWithSameKey")
+	{
+		menu.addSubmenu('s', "submenu item 1");
+		menu.addSubmenu('s', "submenu item 2");
 
-TEST(ConsoleMenu, ShouldDisplayMenuWithAddedMenuItem)
-{
-  ostringstream outputStream;
-  ConsoleMenu menu("Test Menu", outputStream, false);
+		menu.display();
 
-  menu.addMenuItem('c', "Check", []() {});
-  menu.display();
+		string expectedOutput("Test Menu\n"
+			"=========\n"
+			"s. submenu item 2.\n"
+			"---------\n");
+		REQUIRE(expectedOutput == outputStream.str());
+	}
 
-  string expectedMenu("Test Menu\n"
-                      "=========\n"
-                      "c. Check.\n"
-                      "---------\n");
+	SECTION("ShouldDisplayAddedSubmenus")
+	{
+		menu.addSubmenu('s', "Test submenu1");
+		menu.addSubmenu('r', "Test submenu2");
 
-  ASSERT_EQ(expectedMenu, outputStream.str());
-}
+		menu.display();
+		menu.handleKey('s');
 
-TEST(ConsoleMenu, ShouldHandleKeyForDefaultMenuItem)
-{
-  ostringstream outputStream;
-  ConsoleMenu menu("Test Menu", outputStream, true);
+		string expectedOutput("Test Menu\n"
+			"=========\n"
+			"r. Test submenu2.\n"
+			"s. Test submenu1.\n"
+			"---------\n"
+			"Test Menu > Test submenu1\n"
+			"=========================\n"
+			"b. Go back to Test Menu.\n"
+			"-------------------------\n");
+		REQUIRE(expectedOutput == outputStream.str());
+	}
 
-  menu.handleKey('m');
+	SECTION("ShouldReturnToParentMenuFromSubmenu")
+	{
+		auto& submenu1 = menu.addSubmenu('s', "Test submenu1");
+		submenu1.addSubmenu('r', "Test submenu2");
 
-  string expectedMenu("Test Menu\n"
-                      "=========\n"
-                      "m. Display menu.\n"
-                      "---------\n");
+		menu.display();
+		menu.handleKey('s');
+		menu.handleKey('r');
+		menu.handleKey('b');
+		menu.handleKey('b');
 
-  ASSERT_EQ(expectedMenu, outputStream.str());
-}
+		string expectedOutput("Test Menu\n"
+			"=========\n"
+			"s. Test submenu1.\n"
+			"---------\n"
+			"Test Menu > Test submenu1\n"
+			"=========================\n"
+			"b. Go back to Test Menu.\n"
+			"r. Test submenu2.\n"
+			"-------------------------\n"
+			"Test Menu > Test submenu1 > Test submenu2\n"
+			"=========================================\n"
+			"b. Go back to Test Menu > Test submenu1.\n"
+			"x. Return to root menu.\n"
+			"-----------------------------------------\n"
+			"Test Menu > Test submenu1\n"
+			"=========================\n"
+			"b. Go back to Test Menu.\n"
+			"r. Test submenu2.\n"
+			"-------------------------\n"
+			"Test Menu\n"
+			"=========\n"
+			"s. Test submenu1.\n"
+			"---------\n");
+		REQUIRE(expectedOutput == outputStream.str());
+	}
 
-TEST(ConsoleMenu, ShouldDisplayMessageWhenHandlingAKeyThatHasNoAssociatedMenuItem)
-{
-  ostringstream outputStream;
-  ConsoleMenu menu("Test Menu", outputStream);
+	SECTION("ShouldReturnToRootMenuFromMultipleSubmenusDown")
+	{
+		auto& submenu1 = menu.addSubmenu('s', "Test submenu1");
+		submenu1.addSubmenu('r', "Test submenu2");
 
-  menu.handleKey('m');
+		menu.display();
+		menu.handleKey('s');
+		menu.handleKey('r');
+		menu.handleKey('x');
 
-  string expectedMenu("No menu item matches the key 'm'.\n");
-  ASSERT_EQ(expectedMenu, outputStream.str());
-}
+		string expectedOutput("Test Menu\n"
+			"=========\n"
+			"s. Test submenu1.\n"
+			"---------\n"
+			"Test Menu > Test submenu1\n"
+			"=========================\n"
+			"b. Go back to Test Menu.\n"
+			"r. Test submenu2.\n"
+			"-------------------------\n"
+			"Test Menu > Test submenu1 > Test submenu2\n"
+			"=========================================\n"
+			"b. Go back to Test Menu > Test submenu1.\n"
+			"x. Return to root menu.\n"
+			"-----------------------------------------\n"
+			"Test Menu\n"
+			"=========\n"
+			"s. Test submenu1.\n"
+			"---------\n");
+		REQUIRE(expectedOutput == outputStream.str());
+	}
 
-TEST(ConsoleMenu, ShouldCallFunctionPassedInAMenuItem)
-{
-  ostringstream outputStream;
-  ConsoleMenu menu("Test Menu", outputStream);
+	SECTION("ShouldDisplayMessageWhenHandlingAKeyThatHasNoAssociatedMenuItem")
+	{
+		menu.handleKey('m');
 
-  bool functionWasCalled = false;
-  menu.addMenuItem('c', "Check key press", [&]() { functionWasCalled = true; });
+		string expectedOutput("No menu item matches the key 'm'.\n");
+		REQUIRE(expectedOutput == outputStream.str());
+	}
 
-  menu.handleKey('c');
+	SECTION("ShouldCallFunctionPassedInAMenuItem")
+	{
+		bool functionWasCalled = false;
+		menu.addMenuItem('c', "Check key press", [&]() { functionWasCalled = true; });
 
-  ASSERT_TRUE(functionWasCalled);
-}
+		menu.handleKey('c');
 
-TEST(ConsoleMenu, ShouldDisplayMenuWithMultipleMenuItemsAdded)
-{
-  ostringstream outputStream;
-  ConsoleMenu menu("Test Menu", outputStream, true);
-  menu.addMenuItem('c', "Test function", [&]() {});
+		REQUIRE(functionWasCalled);
+	}
 
-  menu.display();
 
-  string expectedMenu("Test Menu\n"
-                      "=========\n"
-                      "c. Test function.\n"
-                      "m. Display menu.\n"
-                      "---------\n");
-  ASSERT_EQ(expectedMenu, outputStream.str());
-}
+	SECTION("ShouldDisplaySubmenu")
+	{
+		menu.addSubmenu('s', "Test submenu");
+		menu.handleKey('s');
 
-TEST(ConsoleMenu, ShouldDisplaySubmenu)
-{
-  ostringstream outputStream;
-  ConsoleMenu menu("Test Menu", outputStream);
-  menu.addSubmenu('s', "Test submenu");
-  menu.handleKey('s');
+		string expectedOutput("Test Menu > Test submenu\n"
+			"========================\n"
+			"b. Go back to Test Menu.\n"
+			"------------------------\n");
+		REQUIRE(expectedOutput == outputStream.str());
+	}
 
-  string expectedMenu("Test Menu > Test submenu\n"
-                      "========================\n"
-                      "b. Go back to Test Menu.\n"
-                      "------------------------\n");
-  ASSERT_EQ(expectedMenu, outputStream.str());
-}
+	SECTION("ShouldDisplaySubmenuAndHandleKeyForSubmenu")
+	{
+		menu.addSubmenu('s', "Test submenu", true);
+		menu.handleKey('s');
+		menu.handleKey('m');
 
-TEST(ConsoleMenu, ShouldDisplaySubmenuAndHandleKeyForSubmenu)
-{
-  ostringstream outputStream;
-  ConsoleMenu menu("Test Menu", outputStream);
-  menu.addSubmenu('s', "Test submenu", true);
-  menu.handleKey('s');
-  menu.handleKey('m');
+		string expectedOutput("Test Menu > Test submenu\n"
+			"========================\n"
+			"b. Go back to Test Menu.\n"
+			"m. Display menu.\n"
+			"------------------------\n"
+			"Test Menu > Test submenu\n"
+			"========================\n"
+			"b. Go back to Test Menu.\n"
+			"m. Display menu.\n"
+			"------------------------\n");
+		REQUIRE(expectedOutput == outputStream.str());
+	}
 
-  string expectedMenu("Test Menu > Test submenu\n"
-                      "========================\n"
-                      "b. Go back to Test Menu.\n"
-                      "m. Display menu.\n"
-                      "------------------------\n"
-                      "Test Menu > Test submenu\n"
-                      "========================\n"
-                      "b. Go back to Test Menu.\n"
-                      "m. Display menu.\n"
-                      "------------------------\n");
-  ASSERT_EQ(expectedMenu, outputStream.str());
-}
+	SECTION("ShouldReturnToRootMenuFromSubmenu")
+	{
+		auto& testSubmenu = menu.addSubmenu('s', "Test submenu");
+		testSubmenu.addSubmenu('r', "Doesn't matter");
+		menu.handleKey('s');
+		menu.handleKey('r');
+		menu.handleKey('x');
 
-TEST(ConsoleMenu, ShouldReturnToRootMenuFromSubmenu)
-{
-  ostringstream outputStream;
-  ConsoleMenu menu("Test Menu", outputStream);
-  auto& testSubmenu = menu.addSubmenu('s', "Test submenu");
-  testSubmenu.addSubmenu('r', "Doesn't matter");
-  menu.handleKey('s');
-  menu.handleKey('r');
-  menu.handleKey('x');
-
-  string expectedMenu("Test Menu > Test submenu\n"
-                      "========================\n"
-                      "b. Go back to Test Menu.\n"
-                      "r. Doesn't matter.\n"
-                      "------------------------\n"
-                      "Test Menu > Test submenu > Doesn't matter\n"
-                      "=========================================\n"
-                      "b. Go back to Test Menu > Test submenu.\n"
-                      "x. Return to root menu.\n"
-                      "-----------------------------------------\n"
-                      "Test Menu\n"
-                      "=========\n"
-                      "s. Test submenu.\n"
-                      "---------\n");
-  ASSERT_EQ(expectedMenu, outputStream.str());
-}
-
-TEST(ConsoleMenu, ShouldReturnToRootMenuFromMultipleSubmenusDown)
-{
-  ostringstream outputStream;
-  ConsoleMenu menu("Test Menu", outputStream);
-  auto& submenu1 = menu.addSubmenu('s', "Test submenu1");
-  submenu1.addSubmenu('r', "Test submenu2");
-
-  menu.display();
-  menu.handleKey('s');
-  menu.handleKey('r');
-  menu.handleKey('x');
-
-  string expectedMenu("Test Menu\n"
-                      "=========\n"
-                      "s. Test submenu1.\n"
-                      "---------\n"
-                      "Test Menu > Test submenu1\n"
-                      "=========================\n"
-                      "b. Go back to Test Menu.\n"
-                      "r. Test submenu2.\n"
-                      "-------------------------\n"
-                      "Test Menu > Test submenu1 > Test submenu2\n"
-                      "=========================================\n"
-                      "b. Go back to Test Menu > Test submenu1.\n"
-                      "x. Return to root menu.\n"
-                      "-----------------------------------------\n"
-                      "Test Menu\n"
-                      "=========\n"
-                      "s. Test submenu1.\n"
-                      "---------\n");
-  ASSERT_EQ(expectedMenu, outputStream.str());
-}
-
-TEST(ConsoleMenu, ShouldReturnToParentMenuFromSubmenu)
-{
-  ostringstream outputStream;
-  ConsoleMenu menu("Test Menu", outputStream);
-  auto& submenu1 = menu.addSubmenu('s', "Test submenu1");
-  submenu1.addSubmenu('r', "Test submenu2");
-
-  menu.display();
-  menu.handleKey('s');
-  menu.handleKey('r');
-  menu.handleKey('b');
-  menu.handleKey('b');
-
-  string expectedMenu("Test Menu\n"
-                      "=========\n"
-                      "s. Test submenu1.\n"
-                      "---------\n"
-                      "Test Menu > Test submenu1\n"
-                      "=========================\n"
-                      "b. Go back to Test Menu.\n"
-                      "r. Test submenu2.\n"
-                      "-------------------------\n"
-                      "Test Menu > Test submenu1 > Test submenu2\n"
-                      "=========================================\n"
-                      "b. Go back to Test Menu > Test submenu1.\n"
-                      "x. Return to root menu.\n"
-                      "-----------------------------------------\n"
-                      "Test Menu > Test submenu1\n"
-                      "=========================\n"
-                      "b. Go back to Test Menu.\n"
-                      "r. Test submenu2.\n"
-                      "-------------------------\n"
-                      "Test Menu\n"
-                      "=========\n"
-                      "s. Test submenu1.\n"
-                      "---------\n");
-  ASSERT_EQ(expectedMenu, outputStream.str());
-}
-
-TEST(ConsoleMenu, ShouldDisplayAddedSubmenus)
-{
-  ostringstream outputStream;
-  ConsoleMenu menu("Test Menu", outputStream);
-  menu.addSubmenu('s', "Test submenu1");
-  menu.addSubmenu('r', "Test submenu2");
-
-  menu.display();
-  menu.handleKey('s');
-
-  string expectedMenu("Test Menu\n"
-                      "=========\n"
-                      "r. Test submenu2.\n"
-                      "s. Test submenu1.\n"
-                      "---------\n"
-                      "Test Menu > Test submenu1\n"
-                      "=========================\n"
-                      "b. Go back to Test Menu.\n"
-                      "-------------------------\n");
-  ASSERT_EQ(expectedMenu, outputStream.str());
-}
-
-TEST(ConsoleMenu, ShouldOverrideExistingMenuItemWithSameKey)
-{
-  ostringstream outputStream;
-  ConsoleMenu menu("Test Menu", outputStream);
-  menu.addMenuItem('s', "menu item 1", []() {});
-  menu.addMenuItem('s', "menu item 2", []() {});
-
-  menu.display();
-
-  string expectedMenu("Test Menu\n"
-                      "=========\n"
-                      "s. menu item 2.\n"
-                      "---------\n");
-  ASSERT_EQ(expectedMenu, outputStream.str());
-}
-
-TEST(ConsoleMenu, ShouldOverrideExistingSubmenuWithSameKey)
-{
-  ostringstream outputStream;
-  ConsoleMenu menu("Test Menu", outputStream);
-  menu.addSubmenu('s', "submenu item 1");
-  menu.addSubmenu('s', "submenu item 2");
-
-  menu.display();
-
-  string expectedMenu("Test Menu\n"
-                      "=========\n"
-                      "s. submenu item 2.\n"
-                      "---------\n");
-  ASSERT_EQ(expectedMenu, outputStream.str());
+		string expectedOutput("Test Menu > Test submenu\n"
+			"========================\n"
+			"b. Go back to Test Menu.\n"
+			"r. Doesn't matter.\n"
+			"------------------------\n"
+			"Test Menu > Test submenu > Doesn't matter\n"
+			"=========================================\n"
+			"b. Go back to Test Menu > Test submenu.\n"
+			"x. Return to root menu.\n"
+			"-----------------------------------------\n"
+			"Test Menu\n"
+			"=========\n"
+			"s. Test submenu.\n"
+			"---------\n");
+		REQUIRE(expectedOutput == outputStream.str());
+	}
 }
